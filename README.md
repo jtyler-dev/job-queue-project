@@ -41,7 +41,14 @@ redisConfig :{
   ```
 
 #Explanation
+##Stack
+##Libraries
+######bluebird.js
+######kue.js
+######Request and Reaquest-Promise
 
 
-run app in debig mode
-node --inspect --debug-brk index.js
+
+#Notes
+run app in debug mode
+'node --inspect --debug-brk index.js'

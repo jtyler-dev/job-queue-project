@@ -17,13 +17,16 @@ A user submits http://www.google.com to your endpoint. If successful, the user g
 
 #Setup
 - npm install
-- start up mongoDB (mongod --dbpath ./data/db/)
-- start up redis (redis-server)
+- Change config.json to be the way you want it
+- start up mongoDB (EX: mongod --dbpath ./data/db/)
+- start up redis (EX: redis-server)
 - start the node application (node server.js)
 
 #Config Options
-reddis -
-redisConfig :{
+- 'mongoDbUrl' - Where the app tries to connect to the db. defaults to "mongodb://localhost/jobsQueue"
+- 'port' - change what port the app is run on: Default is 8080
+- 'redisConfig' - Object that contains redis config. example config would look like this
+'redisConfig :{
     redis: {
         port: 1234,
         host: '10.0.50.20',
@@ -33,8 +36,9 @@ redisConfig :{
           // see https://github.com/mranney/node_redis#rediscreateclient
         }
       }
-  }
+  }'
 
+#Explanation
 
 
 run app in debig mode

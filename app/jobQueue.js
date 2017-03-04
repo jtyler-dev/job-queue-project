@@ -8,7 +8,8 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 // pull in lib for making http requests
 // https://github.com/request/request
-var request = require('request');
+// https://github.com/request/request-promise
+var rp = require('request-promise');
 
 var jobQueue = function() {
 
@@ -24,16 +25,11 @@ var jobQueue = function() {
             config = redisConfig;
         }
 
-        queue = kue.createQueue(config);
-    };
-
-    var initJobs = function () {
-        // find all jobs with pending status or in process
-        // add them all to the queue for processing
+        this.queue = kue.createQueue(config);
     };
 
     var addJob = function (job) {
-        var queueJob = queue.create('getData', {
+        var queueJob = this.queue.create('getData', {
             jobId: job.id
         }).save( function(err){
             if( !err ) console.log( queueJob.id );
@@ -43,7 +39,7 @@ var jobQueue = function() {
         queueJob.on('start', function() {
             // update status to processing
             var job = Job.findById(queueJob.data.jobId).then(function(j){
-                console.log("starting to process job id: " + j.id + " url: " + j.url);
+                //console.log("starting to process job id: " + j.id + " url: " + j.url);
                 j.inProgress();
             });
         });
@@ -52,7 +48,7 @@ var jobQueue = function() {
         queueJob.on('complete', function() {
             // update status to complete
             var job = Job.findById(queueJob.data.jobId).then(function(j){
-                console.log("completed processing job id: " + j.id + " url: " + j.url);
+                //console.log("completed processing job id: " + j.id + " url: " + j.url);
                 j.complete();
             });
         });
@@ -61,7 +57,7 @@ var jobQueue = function() {
         queueJob.on('failed', function() {
             // update status to complete
             var job = Job.findById(queueJob.data.jobId).then(function(j){
-                console.log("processing failed for job id: " + j.id + " url: " + j.url);
+                //console.log("processing failed for job id: " + j.id + " url: " + j.url);
                 j.error();
             });
         });
@@ -72,37 +68,44 @@ var jobQueue = function() {
         if(!ObjectId.isValid(jobId)) {
             return done(new Error('invalid to job ID'));
         } else {
-            Job.findById(queueJob.data.jobId).then(function(job){
-                console.log("processing job id: " + job.id + " url: " + job.url);
-                var url = job.url;
+            Job.findById(jobId).then(function(job){
 
-                request(url, function (error, response, body) {
-                    if (error) {
-                        job.error(error);
-                    } else {
+                //console.log("processing job id: " + job.id + " url: " + job.url);
+                var url = job.url;
+                if(job.status === "pending" || job.status === "in process")
+                {
+                    // The resolveWithFullResponse options allows to pass the full response:
+                    rp({ uri: url, resolveWithFullResponse: true })
+                    .then(function(response) {
                         var statusCode = response && response.statusCode;
+                        var body = response && response.body;
+
                         job.response = body;
                         job.statusCode = statusCode;
                         job.updatedAt = new Date();
                         job.save();
-                    }
-                });
+                        done();
+                    }).catch(function(err) {
+                        //console.log("error processing job id: " + job.id + " url: " + job.url);
+                        job.error(err);
+                        done();
+                    });
+                }
             });
         }
     };
 
     var startProcessingQueue = function(){
-        queue.process('getData', function(job, done) {
+        this.queue.process('getData', function(job, done) {
             processJob(job.data.jobId, done);
         });
     };
 
     return {
         initQueue: initQueue,
-        initJobs: initJobs,
         addJob: addJob,
         startProcessingQueue: startProcessingQueue
     };
-}();
+};
 
 module.exports = jobQueue;

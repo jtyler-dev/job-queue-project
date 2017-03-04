@@ -51,10 +51,6 @@ JobSchema.pre('save', function(next){
         this.updatedAt = this.createdAt;
     }
 
-    // check if url full or not
-    // add http://www if needed
-    //TLD Verification?
-
     next();
 });
 

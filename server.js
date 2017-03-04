@@ -13,11 +13,13 @@ mongoose.Promise = require('bluebird');
 var bodyParser  = require('body-parser');
 var DbHelper = require('./app/db');
 
-var jobQueue = require('./app/jobQueue');
+var JobQueue = require('./app/jobQueue');
 // init our job queue
-//jobQueue.initQueue(config.redis);
+var jobQ = new JobQueue();
+jobQ.initQueue(config.redis);
 
-var jobController = require('./app/controllers/jobController');
+var JobController = require('./app/controllers/jobController');
+var jobCntrl = new JobController(jobQ);
 
 //application vars
 var db;
@@ -36,7 +38,7 @@ var port = process.env.PORT || config.port || 8080;
 var router = express.Router();
 
 // set up our endpoints for jobs
-jobRoutes(router, jobController);
+jobRoutes(router, jobCntrl);
 
 // use api as the base of our api url
 app.use('/api', router);
@@ -50,8 +52,7 @@ DbHelper.connect(config.mongoDbUrl, function(err, database) {
         console.log("Connected to database.");
         db = database;
 
-        // jobQueue.initJobs();
-        // initJobs.startProcessingQueue();
+        jobQ.startProcessingQueue();
         // start the app if we are connected to the db
         console.log("Starting appliation");
         app.listen(port);

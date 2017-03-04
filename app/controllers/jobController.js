@@ -2,9 +2,8 @@
 
 var ObjectId = require('mongoose').Types.ObjectId;
 var Job = require('../models/job');
-// var jobQueue = require('../jobQueue');
 
-var JobController = function () {
+var JobController = function (jobQueue) {
 
     // handler for GET: /jobs/:id
     var getJob = function (req, res) {
@@ -50,8 +49,6 @@ var JobController = function () {
         var jobUrl = req.body.url;
         var jobId, createdAt;
 
-        var test = this.jobQueue;
-
         if(jobUrl) {
             createdAt = new Date();
 
@@ -64,9 +61,7 @@ var JobController = function () {
 
             job.save()
             .then(function(job){
-                this.jobQueue.addJob(job);
-
-                // jobQueue.addJob(job);
+                jobQueue.addJob(job);
                 res.json(job.limitedJSON());
                 res.status(201);
             }).error(function(err) {
@@ -85,6 +80,6 @@ var JobController = function () {
         getAllJobs: getAllJobs,
         createJob: createJob
     };
-}();
+};
 
 module.exports = JobController;

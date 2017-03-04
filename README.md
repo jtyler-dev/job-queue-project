@@ -43,7 +43,7 @@ redisConfig :{
 #Using the API
 ##GET /api/jobs
 returns all jobs currently in the app. Returned data will be in this format.
-'''
+```
 [
     {
         "updatedAt": "2017-03-03T21:52:15.961Z",
@@ -55,10 +55,10 @@ returns all jobs currently in the app. Returned data will be in this format.
         "id": "58b9e58feec5d62972ef51f2"
     }
 ]
-'''
+```
 ##GET /api/jobs/:id
 Returns the job for the given job id. returns an empty object if a job could not be found.
-'''
+```
     {
         "updatedAt": "2017-03-03T21:52:15.961Z",
         "responseCode": "",
@@ -68,22 +68,22 @@ Returns the job for the given job id. returns an empty object if a job could not
         "createdAt": "2017-03-03T21:52:15.961Z",
         "id": "58b9e58feec5d62972ef51f2"
     }
-'''
+```
 ##POST /api/jobs
 Posts to the jobs api will create a new job to run and add it to the queue.
 To create and add a new job to the queue, use this format
-'''
+```
 Content-Type: application/json
 {"url": "http://www.google.com"}
-'''
+```
 The post will return a simplified version of the job data if was successful
-'''
+```
     {
       "id": "58ba8ca025ff203b8c27c532",
       "status": "pending",
       "url": "http://www.google.com"
     }
-'''
+```
 
 #Explanation
 ##Stack

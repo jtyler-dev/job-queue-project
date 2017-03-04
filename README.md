@@ -26,7 +26,8 @@ A user submits http://www.google.com to your endpoint. If successful, the user g
 - 'mongoDbUrl' - Where the app tries to connect to the db. defaults to "mongodb://localhost/jobsQueue"
 - 'port' - change what port the app is run on: Default is 8080
 - 'redisConfig' - Object that contains redis config. example config would look like this
-'redisConfig :{
+```
+redisConfig :{
     redis: {
         port: 1234,
         host: '10.0.50.20',
@@ -36,7 +37,8 @@ A user submits http://www.google.com to your endpoint. If successful, the user g
           // see https://github.com/mranney/node_redis#rediscreateclient
         }
       }
-  }'
+  }
+  ```
 
 #Explanation
 

@@ -1,0 +1,5 @@
+{
+    "mongoDbUrl": "mongodb://localhost/jobsQueue",
+    "port": 8080,
+    "redisConfig": {}
+}

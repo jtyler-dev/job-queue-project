@@ -1,0 +1,24 @@
+{
+  "name": "job-queue-project",
+  "version": "1.0.0",
+  "description": "Job queue project. Code Challenge project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@jtyler-dev:jtyler-dev/job-queue-project.git"
+  },
+  "author": "jtyler",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.17.0",
+    "express": "^4.15.0",
+    "kue": "^0.11.5",
+    "mongoose": "^4.8.5",
+    "node-uuid": "^1.4.7",
+    "request": "^2.79.0"
+  }
+}
